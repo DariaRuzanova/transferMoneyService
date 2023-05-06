@@ -1,9 +1,13 @@
 package ru.daria.transfermoneyservice.model;
 
+import jakarta.validation.constraints.Positive;
+
 import java.util.Objects;
 
 public class Amount {
+    @Positive
     private int value;
+
     private String currency;
 
     public Amount(int value, String currency) {

@@ -4,6 +4,7 @@ package ru.daria.transfermoneyservice.model;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -26,7 +27,14 @@ public class TransferMoney {
     @Length(min = 16)
     public String toCardNumber;
 
-    @Positive
     @NotNull
     Amount amount;
+
+    public String getFromCardNumber() {
+        return fromCardNumber;
+    }
+    public String getToCardNumber(){
+        return toCardNumber;
+    }
 }
+
