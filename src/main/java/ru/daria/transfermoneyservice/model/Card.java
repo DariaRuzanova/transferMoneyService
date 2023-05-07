@@ -12,6 +12,8 @@ public class Card {
         this.cardNumber = cardNumber;
         this.cardValidTill = cardValidTill;
         this.cardCVV = cardCVV;
+        this.amount = amount;
+
     }
 
     public String getCardNumber() {
@@ -24,6 +26,13 @@ public class Card {
 
     public String getCardCVV() {
         return cardCVV;
+    }
+    public int getValueCard(){
+        return amount.getValue();
+    }
+
+    public Amount getAmount() {
+        return amount;
     }
 
     @Override

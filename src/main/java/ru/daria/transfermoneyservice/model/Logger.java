@@ -17,7 +17,7 @@ public class Logger {
         Date time  = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        try (FileOutputStream fos = new FileOutputStream("logFile.txt",true)){
+        try (FileOutputStream fos = new FileOutputStream("logFile.txt",false)){
             String str = numberMsg.getAndIncrement()+" "+formatter.format(time)+" "+msg+"\n";
             byte[]bytes = str.getBytes();
             fos.write(bytes);

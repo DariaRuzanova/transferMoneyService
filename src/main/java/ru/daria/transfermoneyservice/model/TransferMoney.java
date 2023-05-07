@@ -9,7 +9,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import java.lang.ref.SoftReference;
-
+@AllArgsConstructor
 public class TransferMoney {
     @NotEmpty
     @Length(min = 16)
@@ -27,14 +27,19 @@ public class TransferMoney {
     @Length(min = 16)
     public String toCardNumber;
 
-    @NotNull
     Amount amount;
+
+
 
     public String getFromCardNumber() {
         return fromCardNumber;
     }
     public String getToCardNumber(){
         return toCardNumber;
+    }
+
+    public Amount getAmount() {
+        return amount;
     }
 }
 
