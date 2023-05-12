@@ -9,15 +9,15 @@ public class ConfirmOperation {
     private long id;
 
 
-
     @NotNull
     @Min(3)
     private String code;
 
-    public String getCode(){
+    public String getCode() {
         return code;
     }
-    public long getId(){
+
+    public long getId() {
         return id;
     }
 }

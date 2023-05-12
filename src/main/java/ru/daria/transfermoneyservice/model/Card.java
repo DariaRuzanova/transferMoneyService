@@ -8,7 +8,7 @@ public class Card {
     private String cardCVV;
     private Amount amount;
 
-    public Card(String cardNumber, String cardValidTill, String cardCVV, Amount amount ){
+    public Card(String cardNumber, String cardValidTill, String cardCVV, Amount amount) {
         this.cardNumber = cardNumber;
         this.cardValidTill = cardValidTill;
         this.cardCVV = cardCVV;
@@ -27,7 +27,8 @@ public class Card {
     public String getCardCVV() {
         return cardCVV;
     }
-    public int getValueCard(){
+
+    public int getValueCard() {
         return amount.getValue();
     }
 

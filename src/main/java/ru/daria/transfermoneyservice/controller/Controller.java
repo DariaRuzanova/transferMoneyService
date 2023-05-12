@@ -1,17 +1,15 @@
 package ru.daria.transfermoneyservice.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.daria.transfermoneyservice.model.ConfirmOperation;
 import ru.daria.transfermoneyservice.model.TransferMoney;
 import ru.daria.transfermoneyservice.service.CardService;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class Controller {
     private final CardService service;
-
 
     public Controller(CardService service) {
         this.service = service;

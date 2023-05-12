@@ -2,40 +2,36 @@ package ru.daria.transfermoneyservice.model;
 
 
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
-import java.lang.ref.SoftReference;
 @AllArgsConstructor
 public class TransferMoney {
     @NotEmpty
     @Length(min = 16)
-    public String fromCardNumber;
+    public String cardFromNumber;
 
     @NotEmpty
     @Length(min = 4)
-    public String fromCardValidTill;
+    public String cardFromValidTill;
 
     @NotEmpty
     @Length(min = 3)
-    public String fromCardCVC;
+    public String cardFromCVV;
 
     @NotEmpty
     @Length(min = 16)
-    public String toCardNumber;
+    public String cardToNumber;
 
     Amount amount;
 
 
-
-    public String getFromCardNumber() {
-        return fromCardNumber;
+    public String getCardFromNumber() {
+        return cardFromNumber;
     }
-    public String getToCardNumber(){
-        return toCardNumber;
+
+    public String getCardToNumber() {
+        return cardToNumber;
     }
 
     public Amount getAmount() {

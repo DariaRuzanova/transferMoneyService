@@ -40,6 +40,7 @@ public class ServiceTest {
 
 
     }
+
     @Test
     void transferTest_IncorrectDataEntry() {
         TransferMoney transferMoney = new TransferMoney(
@@ -52,40 +53,43 @@ public class ServiceTest {
 
 
     }
+
     @Test
     void transferTest_NotEnoughMoneyException() {
         TransferMoney transferMoney = new TransferMoney(
                 "2200220022002200",
-                "05.30",
+                "05/30",
                 "115",
                 "2200564512341234",
                 new Amount(120000, "RU"));
         Assertions.assertThrowsExactly(NotEnoughMoneyException.class, () -> cardService.transfer(transferMoney));
     }
+
     @Test
     void transferTest() {
         TransferMoney transferMoney = new TransferMoney(
                 "2200220022002200",
-                "05.30",
+                "05/30",
                 "115",
                 "2200564512341234",
                 new Amount(10000, "RU"));
-        Assertions.assertEquals(0,cardService.transfer(transferMoney));
+        Assertions.assertEquals(0, cardService.transfer(transferMoney));
     }
+
     @Test
-    void confirmOperation(){
+    void confirmOperation() {
         TransferMoney transferMoney = new TransferMoney(
                 "2200220022002200",
-                "05.30",
+                "05/30",
                 "115",
                 "2200564512341234",
                 new Amount(10000, "RU"));
         long id = cardService.transfer(transferMoney);
-        String code = "8888";
+        String code = "0000";
 
-        ConfirmOperation confirmOperation = new ConfirmOperation(id,code);
+        ConfirmOperation confirmOperation = new ConfirmOperation(id, code);
         var response = cardService.confirmOperation(confirmOperation);
-        Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
 
     }
 }

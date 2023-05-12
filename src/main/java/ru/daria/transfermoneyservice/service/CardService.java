@@ -28,16 +28,16 @@ public class CardService {
     }
 
     public long transfer(TransferMoney transferMoney) {
-        String fromCardNumber = transferMoney.getFromCardNumber();
-        String toCardNumber = transferMoney.getToCardNumber();
+        String fromCardNumber = transferMoney.getCardFromNumber();
+        String toCardNumber = transferMoney.getCardToNumber();
         Card fromCard = dataBaseCards.getCard(fromCardNumber);
         Card toCard = dataBaseCards.getCard(toCardNumber);
 
         if (fromCard == null || toCard == null) {
             throw new exceptionUnknownCard("Неизвестный номер карты " + fromCardNumber);
         }
-        if (!fromCard.getCardValidTill().equals(transferMoney.fromCardValidTill) ||
-                !fromCard.getCardCVV().equals(transferMoney.fromCardCVC)) {
+        if (!fromCard.getCardValidTill().equals(transferMoney.cardFromValidTill) ||
+                !fromCard.getCardCVV().equals(transferMoney.cardFromCVV)) {
             logger.getLog("ERROR! Ошибка ввода данных карты: Error input data card");
             throw new IncorrectDataEntry("Error input data card");
         }
@@ -47,7 +47,7 @@ public class CardService {
         }
 
         long id = operationId.getAndIncrement();
-        String code = "8888";
+        String code = "0000";
         PendingOperation operation = new PendingOperation(id, code, transferMoney);
         lisPendingOperation.add(operation);
         return id;
@@ -62,13 +62,13 @@ public class CardService {
         } else {
             TransferMoney transferMoney=pendingOperation.getTransferMoney();
             logger.getLog("Операция: \"" + confirmOperation.getId() + "\" выполнена \n" +
-                    "Карта списания: " + transferMoney.getFromCardNumber() + "\n" +
-                    "Карта зачисления: " + transferMoney.getToCardNumber() + "\n" +
+                    "Карта списания: " + transferMoney.getCardFromNumber() + "\n" +
+                    "Карта зачисления: " + transferMoney.getCardToNumber() + "\n" +
                     "Сумма перевода: " + transferMoney.getAmount().getValue() + "\n" +
                     "Валюта перевода: " + transferMoney.getAmount().getCurrency());
 
-            String fromCardNumber = transferMoney.fromCardNumber;
-            String toCardNumber = transferMoney.toCardNumber;
+            String fromCardNumber = transferMoney.cardFromNumber;
+            String toCardNumber = transferMoney.cardToNumber;
             Amount amount = transferMoney.getAmount();
             Card fromCard = dataBaseCards.getCard(fromCardNumber);
             Card toCard = dataBaseCards.getCard(toCardNumber);

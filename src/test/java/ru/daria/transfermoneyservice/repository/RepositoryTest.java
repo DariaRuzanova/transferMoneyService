@@ -23,17 +23,18 @@ public class RepositoryTest {
     }
 
     @Test
-    void getCard(){
+    void getCard() {
         String cardNumber = "2200220022002200";
         Card card = cardRepository.getCard(cardNumber);
         Assertions.assertNotNull(card);
     }
+
     @Test
-    void getCard2(){
+    void getCard2() {
         String cardNumber = "2200220022002200";
         Card card = cardRepository.getCard(cardNumber);
         int expected = 100000;
         int currency = card.getValueCard();
-        Assertions.assertEquals(expected,currency);
+        Assertions.assertEquals(expected, currency);
     }
 }
