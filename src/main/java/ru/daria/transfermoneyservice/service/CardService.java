@@ -3,12 +3,13 @@ package ru.daria.transfermoneyservice.service;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import ru.daria.transfermoneyservice.exception.IncorrectСodeException;
+import ru.daria.transfermoneyservice.exception.IncorrectCodeException;
 import ru.daria.transfermoneyservice.exception.NotEnoughMoneyException;
+import ru.daria.transfermoneyservice.logger.Logger;
 import ru.daria.transfermoneyservice.model.*;
 import ru.daria.transfermoneyservice.repository.CardRepository;
 import ru.daria.transfermoneyservice.exception.IncorrectDataEntry;
-import ru.daria.transfermoneyservice.exception.exceptionUnknownCard;
+import ru.daria.transfermoneyservice.exception.ExceptionUnknownCard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,24 +18,24 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class CardService {
     private final CardRepository dataBaseCards;
-    Logger logger=new Logger();
+    private Logger logger;
     AtomicLong operationId = new AtomicLong(0);
 
     List<PendingOperation> lisPendingOperation = new ArrayList<>();
 
-
-    public CardService(CardRepository dataBaseCards) {
+    public CardService(CardRepository dataBaseCards, Logger logger) {
         this.dataBaseCards = dataBaseCards;
+        this.logger = logger;
     }
 
-    public long transfer(TransferMoney transferMoney) {
+    public String transfer(TransferMoney transferMoney) {
         String fromCardNumber = transferMoney.getCardFromNumber();
         String toCardNumber = transferMoney.getCardToNumber();
         Card fromCard = dataBaseCards.getCard(fromCardNumber);
         Card toCard = dataBaseCards.getCard(toCardNumber);
 
         if (fromCard == null || toCard == null) {
-            throw new exceptionUnknownCard("Неизвестный номер карты " + fromCardNumber);
+            throw new ExceptionUnknownCard("Неизвестный номер карты " + fromCardNumber);
         }
         if (!fromCard.getCardValidTill().equals(transferMoney.cardFromValidTill) ||
                 !fromCard.getCardCVV().equals(transferMoney.cardFromCVV)) {
@@ -46,7 +47,7 @@ public class CardService {
             throw new NotEnoughMoneyException("На карте недостаточно средств");
         }
 
-        long id = operationId.getAndIncrement();
+        String id = String.valueOf(operationId.getAndIncrement());
         String code = "0000";
         PendingOperation operation = new PendingOperation(id, code, transferMoney);
         lisPendingOperation.add(operation);
@@ -58,7 +59,7 @@ public class CardService {
         if (!pendingOperation.getCode().equals(confirmOperation.getCode())) {
 
             logger.getLog("Введен не верный код");
-            throw new IncorrectСodeException("Введен не верный код");
+            throw new IncorrectCodeException("Введен не верный код");
         } else {
             TransferMoney transferMoney=pendingOperation.getTransferMoney();
             logger.getLog("Операция: \"" + confirmOperation.getId() + "\" выполнена \n" +
@@ -88,8 +89,4 @@ public class CardService {
         toCard.getAmount().setValue(toCard.getAmount().getValue() + amount.getValue());
     }
 
-//    public Card cardNumberCheck(String cardNumber) {
-//        return dataBaseCards.getCard(cardNumber);
-//
-//    }
 }

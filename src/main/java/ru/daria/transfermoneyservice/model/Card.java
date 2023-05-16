@@ -3,10 +3,10 @@ package ru.daria.transfermoneyservice.model;
 import java.util.Objects;
 
 public class Card {
-    private String cardNumber;
-    private String cardValidTill;
-    private String cardCVV;
-    private Amount amount;
+    private final String cardNumber;
+    private final String cardValidTill;
+    private final String cardCVV;
+    private final Amount amount;
 
     public Card(String cardNumber, String cardValidTill, String cardCVV, Amount amount) {
         this.cardNumber = cardNumber;
@@ -14,10 +14,6 @@ public class Card {
         this.cardCVV = cardCVV;
         this.amount = amount;
 
-    }
-
-    public String getCardNumber() {
-        return cardNumber;
     }
 
     public String getCardValidTill() {

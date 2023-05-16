@@ -3,28 +3,26 @@ package ru.daria.transfermoneyservice.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import ru.daria.transfermoneyservice.exception.IncorrectDataEntry;
 import ru.daria.transfermoneyservice.exception.NotEnoughMoneyException;
-import ru.daria.transfermoneyservice.exception.exceptionUnknownCard;
+import ru.daria.transfermoneyservice.exception.ExceptionUnknownCard;
+import ru.daria.transfermoneyservice.logger.Logger;
 import ru.daria.transfermoneyservice.model.Amount;
-import ru.daria.transfermoneyservice.model.Card;
 import ru.daria.transfermoneyservice.model.ConfirmOperation;
 import ru.daria.transfermoneyservice.model.TransferMoney;
 import ru.daria.transfermoneyservice.repository.CardRepository;
 
 @SpringBootTest
 public class ServiceTest {
-    private TransferMoney transferMoney;
-    private CardRepository cardRepository;
     private CardService cardService;
 
     @BeforeEach
     void init() {
-        cardRepository = new CardRepository();
-        cardService = new CardService(cardRepository);
+        Logger logger = new Logger();
+        CardRepository cardRepository = new CardRepository(logger);
+        cardService = new CardService(cardRepository,logger);
     }
 
 
@@ -36,7 +34,7 @@ public class ServiceTest {
                 "115",
                 "2200564512341234",
                 new Amount(100000, "RU"));
-        Assertions.assertThrowsExactly(exceptionUnknownCard.class, () -> cardService.transfer(transferMoney));
+        Assertions.assertThrowsExactly(ExceptionUnknownCard.class, () -> cardService.transfer(transferMoney));
 
 
     }
@@ -50,8 +48,6 @@ public class ServiceTest {
                 "2200564512341234",
                 new Amount(100000, "RU"));
         Assertions.assertThrowsExactly(IncorrectDataEntry.class, () -> cardService.transfer(transferMoney));
-
-
     }
 
     @Test
@@ -73,7 +69,7 @@ public class ServiceTest {
                 "115",
                 "2200564512341234",
                 new Amount(10000, "RU"));
-        Assertions.assertEquals(0, cardService.transfer(transferMoney));
+        Assertions.assertEquals("0", cardService.transfer(transferMoney));
     }
 
     @Test
@@ -84,7 +80,7 @@ public class ServiceTest {
                 "115",
                 "2200564512341234",
                 new Amount(10000, "RU"));
-        long id = cardService.transfer(transferMoney);
+        String id = cardService.transfer(transferMoney);
         String code = "0000";
 
         ConfirmOperation confirmOperation = new ConfirmOperation(id, code);

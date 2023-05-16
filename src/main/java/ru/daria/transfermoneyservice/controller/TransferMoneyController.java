@@ -7,16 +7,17 @@ import ru.daria.transfermoneyservice.model.TransferMoney;
 import ru.daria.transfermoneyservice.service.CardService;
 
 @RestController
-@CrossOrigin(origins = "*")
-public class Controller {
+//@CrossOrigin(origins = "*")
+@CrossOrigin(origins = {"http://localhost:5500"})
+public class TransferMoneyController {
     private final CardService service;
 
-    public Controller(CardService service) {
+    public TransferMoneyController(CardService service) {
         this.service = service;
     }
 
     @PostMapping("/transfer")
-    public long transfer(@RequestBody TransferMoney transferMoney) {
+    public String transfer(@RequestBody TransferMoney transferMoney) {
         return service.transfer(transferMoney);
 
     }

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.daria.transfermoneyservice.logger.Logger;
 import ru.daria.transfermoneyservice.model.Card;
 
 @SpringBootTest
@@ -12,7 +13,7 @@ public class RepositoryTest {
 
     @BeforeEach
     void init() {
-        cardRepository = new CardRepository();
+        cardRepository = new CardRepository(new Logger());
     }
 
     @Test

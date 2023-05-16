@@ -1,9 +1,9 @@
 package ru.daria.transfermoneyservice.repository;
 
 import org.springframework.stereotype.Repository;
+import ru.daria.transfermoneyservice.logger.Logger;
 import ru.daria.transfermoneyservice.model.Amount;
 import ru.daria.transfermoneyservice.model.Card;
-import ru.daria.transfermoneyservice.model.Logger;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -14,11 +14,12 @@ import java.util.concurrent.ConcurrentHashMap;
 @Repository
 public class CardRepository {
     private final String FOLDERPATH = "src/main/resources/application.properties";
-    private Map<String, Card> listCards;
+    private final Map<String, Card> listCards;
     private Amount amount;
-    Logger logger = new Logger();
+    private final Logger logger;
 
-    public CardRepository() {
+    public CardRepository(Logger logger) {
+        this.logger = logger;
         listCards = new ConcurrentHashMap<>();
         Properties properties = new Properties();
         try {
@@ -59,7 +60,6 @@ public class CardRepository {
             logger.getLog("Номер карты " + cardNumber + " введен не верно");
             return null;
         }
-        Card card = listCards.get(cardNumber);
-        return card;
+        return listCards.get(cardNumber);
     }
 }

@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class ConfirmOperation {
-    private long id;
+    private String id;
 
 
     @NotNull
@@ -17,7 +17,7 @@ public class ConfirmOperation {
         return code;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 }

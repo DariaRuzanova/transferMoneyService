@@ -8,7 +8,7 @@ public class Amount {
     @Positive
     private int value;
 
-    private String currency;
+    private final String currency;
 
     public Amount(int value, String currency) {
         this.value = value;
@@ -25,10 +25,6 @@ public class Amount {
 
     public String getCurrency() {
         return currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
     }
 
     @Override
