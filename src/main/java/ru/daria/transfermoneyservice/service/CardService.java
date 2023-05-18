@@ -13,22 +13,23 @@ import ru.daria.transfermoneyservice.exception.ExceptionUnknownCard;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class CardService {
     private final CardRepository dataBaseCards;
-    private Logger logger;
+    private final Logger logger;
     AtomicLong operationId = new AtomicLong(0);
 
-    List<PendingOperation> lisPendingOperation = new ArrayList<>();
+    List<PendingOperation> listPendingOperation = new ArrayList<>();
 
     public CardService(CardRepository dataBaseCards, Logger logger) {
         this.dataBaseCards = dataBaseCards;
         this.logger = logger;
     }
 
-    public String transfer(TransferMoney transferMoney) {
+    public ResponseEntity<TransferResult> transfer(TransferMoney transferMoney) {
         String fromCardNumber = transferMoney.getCardFromNumber();
         String toCardNumber = transferMoney.getCardToNumber();
         Card fromCard = dataBaseCards.getCard(fromCardNumber);
@@ -50,19 +51,18 @@ public class CardService {
         String id = String.valueOf(operationId.getAndIncrement());
         String code = "0000";
         PendingOperation operation = new PendingOperation(id, code, transferMoney);
-        lisPendingOperation.add(operation);
-        return id;
+        listPendingOperation.add(operation);
+
+        TransferResult result = new TransferResult();
+        result.operationId = id;
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     public ResponseEntity<String> confirmOperation(ConfirmOperation confirmOperation) {
-        PendingOperation pendingOperation = lisPendingOperation.stream().filter(x -> x.id == confirmOperation.getId()).findFirst().orElse(null);
-        if (!pendingOperation.getCode().equals(confirmOperation.getCode())) {
-
-            logger.getLog("Введен не верный код");
-            throw new IncorrectCodeException("Введен не верный код");
-        } else {
+        PendingOperation pendingOperation = listPendingOperation.stream().filter(x -> Objects.equals(x.id, confirmOperation.getOperationId())).findFirst().orElse(null);
+        if (pendingOperation != null && pendingOperation.getCode().equals(confirmOperation.getCode())) {
             TransferMoney transferMoney=pendingOperation.getTransferMoney();
-            logger.getLog("Операция: \"" + confirmOperation.getId() + "\" выполнена \n" +
+            logger.getLog("Операция: \"" + confirmOperation.getOperationId() + "\" выполнена \n" +
                     "Карта списания: " + transferMoney.getCardFromNumber() + "\n" +
                     "Карта зачисления: " + transferMoney.getCardToNumber() + "\n" +
                     "Сумма перевода: " + transferMoney.getAmount().getValue() + "\n" +
@@ -76,10 +76,11 @@ public class CardService {
             updateBalance(fromCardNumber, toCardNumber, amount);
             logger.getLog("Баланс карты списания " + fromCardNumber + " : " + fromCard.getValueCard());
             logger.getLog("Баланс карты зачисления" + toCardNumber + " : " + toCard.getValueCard());
-            return new ResponseEntity("Операция с id " + confirmOperation.getId() + " подтверждена", HttpStatus.OK);
-
+            return new ResponseEntity<>("Операция с id " + confirmOperation.getOperationId() + " подтверждена", HttpStatus.OK);
+        } else {
+            logger.getLog("Введен не верный код");
+            throw new IncorrectCodeException("Введен не верный код");
         }
-
     }
 
     public void updateBalance(String fromCardNumber, String toCardNumber, Amount amount) {

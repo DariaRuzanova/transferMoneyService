@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import ru.daria.transfermoneyservice.exception.IncorrectDataEntry;
 import ru.daria.transfermoneyservice.exception.NotEnoughMoneyException;
 import ru.daria.transfermoneyservice.exception.ExceptionUnknownCard;
@@ -12,7 +13,10 @@ import ru.daria.transfermoneyservice.logger.Logger;
 import ru.daria.transfermoneyservice.model.Amount;
 import ru.daria.transfermoneyservice.model.ConfirmOperation;
 import ru.daria.transfermoneyservice.model.TransferMoney;
+import ru.daria.transfermoneyservice.model.TransferResult;
 import ru.daria.transfermoneyservice.repository.CardRepository;
+
+import java.util.Objects;
 
 @SpringBootTest
 public class ServiceTest {
@@ -69,7 +73,10 @@ public class ServiceTest {
                 "115",
                 "2200564512341234",
                 new Amount(10000, "RU"));
-        Assertions.assertEquals("0", cardService.transfer(transferMoney));
+        ResponseEntity<TransferResult> result = cardService.transfer(transferMoney);
+        Assertions.assertNotNull(result);
+        Assertions.assertNotNull(result.getBody());
+        Assertions.assertEquals("0", result.getBody().operationId);
     }
 
     @Test
@@ -80,12 +87,12 @@ public class ServiceTest {
                 "115",
                 "2200564512341234",
                 new Amount(10000, "RU"));
-        String id = cardService.transfer(transferMoney);
+        ResponseEntity<TransferResult> result = cardService.transfer(transferMoney);
+        String id = Objects.requireNonNull(result.getBody()).operationId;
         String code = "0000";
 
         ConfirmOperation confirmOperation = new ConfirmOperation(id, code);
         var response = cardService.confirmOperation(confirmOperation);
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
-
     }
 }

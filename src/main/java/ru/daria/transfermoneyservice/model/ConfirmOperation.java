@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class ConfirmOperation {
-    private String id;
-
+    @NotNull
+    private String operationId;
 
     @NotNull
     @Min(3)
@@ -17,7 +17,7 @@ public class ConfirmOperation {
         return code;
     }
 
-    public String getId() {
-        return id;
+    public String getOperationId() {
+        return operationId;
     }
 }
