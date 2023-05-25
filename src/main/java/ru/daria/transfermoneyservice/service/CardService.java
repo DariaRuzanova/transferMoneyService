@@ -58,10 +58,13 @@ public class CardService {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    public ResponseEntity<String> confirmOperation(ConfirmOperation confirmOperation) {
-        PendingOperation pendingOperation = listPendingOperation.stream().filter(x -> Objects.equals(x.id, confirmOperation.getOperationId())).findFirst().orElse(null);
+    public ResponseEntity<TransferResult> confirmOperation(ConfirmOperation confirmOperation) {
+        PendingOperation pendingOperation = listPendingOperation.stream()
+                .filter(x -> Objects.equals(x.id, confirmOperation.getOperationId()))
+                .findFirst()
+                .orElse(null);
         if (pendingOperation != null && pendingOperation.getCode().equals(confirmOperation.getCode())) {
-            TransferMoney transferMoney=pendingOperation.getTransferMoney();
+            TransferMoney transferMoney = pendingOperation.getTransferMoney();
             logger.getLog("Операция: \"" + confirmOperation.getOperationId() + "\" выполнена \n" +
                     "Карта списания: " + transferMoney.getCardFromNumber() + "\n" +
                     "Карта зачисления: " + transferMoney.getCardToNumber() + "\n" +
@@ -76,7 +79,9 @@ public class CardService {
             updateBalance(fromCardNumber, toCardNumber, amount);
             logger.getLog("Баланс карты списания " + fromCardNumber + " : " + fromCard.getValueCard());
             logger.getLog("Баланс карты зачисления" + toCardNumber + " : " + toCard.getValueCard());
-            return new ResponseEntity<>("Операция с id " + confirmOperation.getOperationId() + " подтверждена", HttpStatus.OK);
+            TransferResult result = new TransferResult();
+            result.operationId = confirmOperation.getOperationId();
+            return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             logger.getLog("Введен не верный код");
             throw new IncorrectCodeException("Введен не верный код");

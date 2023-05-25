@@ -11,6 +11,7 @@ import ru.daria.transfermoneyservice.model.TransferResult;
 import ru.daria.transfermoneyservice.service.CardService;
 
 @RestController
+@CrossOrigin
 public class TransferMoneyController {
     private final CardService service;
 
@@ -19,14 +20,12 @@ public class TransferMoneyController {
     }
 
     @PostMapping("/transfer")
-    @CrossOrigin
     public ResponseEntity<TransferResult> transfer(@RequestBody TransferMoney transferMoney) {
         return service.transfer(transferMoney);
     }
 
     @PostMapping("/confirmOperation")
-    @CrossOrigin
-    public ResponseEntity<String> confirmOperation(@RequestBody ConfirmOperation confirmOperation) {
+    public ResponseEntity<TransferResult> confirmOperation(@RequestBody ConfirmOperation confirmOperation) {
         return service.confirmOperation(confirmOperation);
     }
 }
