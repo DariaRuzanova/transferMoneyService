@@ -35,7 +35,7 @@ public class RepositoryTest {
         String cardNumber = "2200220022002200";
         Card card = cardRepository.getCard(cardNumber);
         int expected = 100000;
-        int currency = card.getValueCard();
+        int currency = card.amount().getValue();
         Assertions.assertEquals(expected, currency);
     }
 }

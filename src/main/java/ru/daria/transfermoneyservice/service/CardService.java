@@ -38,12 +38,12 @@ public class CardService {
         if (fromCard == null || toCard == null) {
             throw new ExceptionUnknownCard("Неизвестный номер карты " + fromCardNumber);
         }
-        if (!fromCard.getCardValidTill().equals(transferMoney.cardFromValidTill) ||
-                !fromCard.getCardCVV().equals(transferMoney.cardFromCVV)) {
+        if (!fromCard.cardValidTill().equals(transferMoney.cardFromValidTill) ||
+                !fromCard.cardCVV().equals(transferMoney.cardFromCVV)) {
             logger.getLog("ERROR! Ошибка ввода данных карты: Error input data card");
             throw new IncorrectDataEntry("Error input data card");
         }
-        if (fromCard.getValueCard() < transferMoney.getAmount().getValue()) {
+        if (fromCard.amount().getValue() < transferMoney.getAmount().getValue()) {
             logger.getLog("На карте недостаточно средств");
             throw new NotEnoughMoneyException("На карте недостаточно средств");
         }
@@ -77,8 +77,8 @@ public class CardService {
             Card fromCard = dataBaseCards.getCard(fromCardNumber);
             Card toCard = dataBaseCards.getCard(toCardNumber);
             updateBalance(fromCardNumber, toCardNumber, amount);
-            logger.getLog("Баланс карты списания " + fromCardNumber + " : " + fromCard.getValueCard());
-            logger.getLog("Баланс карты зачисления" + toCardNumber + " : " + toCard.getValueCard());
+            logger.getLog("Баланс карты списания " + fromCardNumber + " : " + fromCard.amount().getValue());
+            logger.getLog("Баланс карты зачисления" + toCardNumber + " : " + toCard.amount().getValue());
             TransferResult result = new TransferResult();
             result.operationId = confirmOperation.getOperationId();
             return new ResponseEntity<>(result, HttpStatus.OK);
@@ -91,8 +91,8 @@ public class CardService {
     public void updateBalance(String fromCardNumber, String toCardNumber, Amount amount) {
         Card fromCard = dataBaseCards.getCard(fromCardNumber);
         Card toCard = dataBaseCards.getCard(toCardNumber);
-        fromCard.getAmount().setValue(fromCard.getAmount().getValue() - amount.getValue());
-        toCard.getAmount().setValue(toCard.getAmount().getValue() + amount.getValue());
+        fromCard.amount().setValue(fromCard.amount().getValue() - amount.getValue());
+        toCard.amount().setValue(toCard.amount().getValue() + amount.getValue());
     }
 
 }
