@@ -13,7 +13,6 @@ public class Card {
         this.cardValidTill = cardValidTill;
         this.cardCVV = cardCVV;
         this.amount = amount;
-
     }
 
     public String getCardValidTill() {
